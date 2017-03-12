@@ -1,0 +1,4 @@
+IMAGE_SIZE = 256
+CHANNELS = 3
+
+FORMAT = 'jpeg'
