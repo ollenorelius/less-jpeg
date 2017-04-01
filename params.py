@@ -1,4 +1,6 @@
-IMAGE_SIZE = 256
+IMAGE_SIZE = 64
 CHANNELS = 3
 
 FORMAT = 'jpeg'
+
+SHUFFLE = False
