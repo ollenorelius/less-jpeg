@@ -13,6 +13,7 @@ except ImportError:
 
 class InputProducer():
     filenames = []
+    filenames_ordered = []
     epoch = 0
     current_pic = 0
     pic_slice_index = 0
@@ -24,6 +25,7 @@ class InputProducer():
 
         self.folder = folder
         self.filenames = self.filter_filenames(os.listdir(folder), ending)
+        self.filenames_ordered = list(self.filenames)
         self.n_pictures = len(self.filenames)
         if self.shuffle:
             np.random.shuffle(self.filenames)
@@ -49,7 +51,7 @@ class InputProducer():
         return batch
 
     def get_picture(self, number):
-        pic_slices, w, h = self.new_slice_list(number, trim=False)
+        pic_slices, w, h = self.new_slice_list(number, trim=False, shuffle=False)
         slice_count = len(pic_slices)
         batch = np.ones([slice_count, p.IMAGE_SIZE, p.IMAGE_SIZE, p.CHANNELS], dtype='uint8')*255
         for i in range(slice_count):
@@ -84,8 +86,8 @@ class InputProducer():
             im.save(out, format='png', quality=100)
         return 1
 
-    def new_slice_list(self, pic_number, trim):
-        pic_filename = self.filenames[pic_number]
+    def new_slice_list(self, pic_number, trim, shuffle=p.SHUFFLE):
+        pic_filename = self.filenames_ordered[pic_number]
         img = Image.open(self.folder + "/" + pic_filename)
 
         h, w = img.size
@@ -112,5 +114,6 @@ class InputProducer():
                     continue
 
                 pic_slices.append(img[x1:x2, y1:y2, :])
-
+        if shuffle:
+            np.random.shuffle(pic_slices)
         return pic_slices, w, h

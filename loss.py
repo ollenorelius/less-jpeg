@@ -1,9 +1,9 @@
 import tensorflow as tf
 import numpy as np
+import params as p
 
 def create_loss(input_tensor, prediction):
-    #TODO: The point of this function is to convolve out the edges, but i'm tired
-    # and so it's just regular dumb l2 for now.
+
     tf.summary.histogram('input_tensor_loss', input_tensor)
     tf.summary.histogram('Prediction_loss', prediction)
 
@@ -19,7 +19,7 @@ def create_loss(input_tensor, prediction):
 
     a = 0.5 #weighting for absolute vs edge
 
-    return (a*abs_sum + grad_sum)/(4*256*256*3)
+    return (a*abs_sum + grad_sum)/(p.BATCH_SIZE*p.IMAGE_SIZE*p.IMAGE_SIZE*p.CHANNELS)
 
 def get_horz_grad(tensor):
     inc = int(tensor.get_shape()[3])

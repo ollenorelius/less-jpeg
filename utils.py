@@ -2,8 +2,8 @@ import numpy as np
 import params as p
 from PIL import Image
 def stitch_image(batch, w, h):
-    np2_w =  int(2** np.ceil(np.log2(w)))
-    np2_h =  int(2** np.ceil(np.log2(h)))
+    np2_w =  int(2** np.ceil(np.log2(h)))
+    np2_h =  int(2** np.ceil(np.log2(w)))
 
     ims = p.IMAGE_SIZE
     w_slices = int(np.ceil(np2_w / ims))

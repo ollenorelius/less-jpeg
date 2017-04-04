@@ -21,6 +21,32 @@ def create_backward_net(input_tensor, original_batch):
 
         r_l1 = output_layer(r_l4, 1, p.CHANNELS, 1, 'r_layer_1')
 
+        return r_l1# + original_batchd
+
+def create_deep_forward_net(input_tensor):
+    with tf.name_scope('Forward_net'):
+        l1 = conv_layer(input_tensor, 5, 18, 1, 'layer_1')
+        s2 = conv_layer(l1, 5, 18, 2, 'shrink_layer_2') #128
+        l3 = conv_layer(s2, 3, 36, 1, 'layer_3')
+        s5 = conv_layer(l3, 3, 36, 2, 'shrink_layer_5') # 64
+        l6 = conv_layer(s5, 3, 36, 1, 'layer_9')
+        l7 = conv_layer(l6, 3, 48, 1, 'layer_9')
+        s6 = conv_layer(l7, 3, 48, 2, 'shrink_layer_5') # 32
+        l8 = conv_layer(s6, 3, 80, 1, 'layer_9')
+        l9 = conv_layer(l8, 3, 80, 1, 'layer_9')
+        return l9
+
+def create_deep_backward_net(input_tensor, original_batch):
+    with tf.name_scope('Backward_net'):
+        r_s5 = r_conv_layer(input_tensor, 3, 80, 2, 'r_shrink_layer_5') # 64
+        r_l6 = r_conv_layer(r_s5, 3, 64, 1, 'r_layer_9')
+        r_s4 = r_conv_layer(r_l6, 3, 64, 2, 'r_shrink_layer_5') # 128
+        r_l3 = r_conv_layer(r_s4, 3, 64, 1, 'r_layer_3')
+        r_s2 = r_conv_layer(r_l3, 3, 64, 2, 'r_shrink_layer_2') #256
+        r_l4 = r_conv_layer(r_s2, 5, 64, 1, 'r_layer_4')
+
+        r_l1 = output_layer(r_l4, 1, p.CHANNELS, 1, 'r_layer_1')
+
         return r_l1# + original_batch
 
 

@@ -3,4 +3,5 @@ CHANNELS = 3
 
 FORMAT = 'jpeg'
 
-SHUFFLE = False
+SHUFFLE = True
+BATCH_SIZE = 30

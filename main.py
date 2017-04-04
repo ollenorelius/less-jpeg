@@ -8,15 +8,17 @@ import utils as u
 from PIL import Image
 
 data_folder = 'data'
-batch_size = 10
+batch_size = p.BATCH_SIZE
 input_prod = InputProducer(data_folder, 'png')
 
 inp = tf.placeholder(tf.float32, shape=[None, p.IMAGE_SIZE, p.IMAGE_SIZE, p.CHANNELS])
 inp_compressed = tf.placeholder(tf.float32, shape=[None, p.IMAGE_SIZE, p.IMAGE_SIZE, p.CHANNELS])
 
-feature_representation = net.create_forward_net(inp_compressed)
+#feature_representation = net.create_forward_net(inp_compressed)
+#return_image = net.create_backward_net(feature_representation, inp_compressed)
 
-return_image = net.create_backward_net(feature_representation, inp_compressed)
+feature_representation = net.create_deep_forward_net(inp_compressed)
+return_image = net.create_deep_backward_net(feature_representation, inp_compressed)
 
 loss_value = loss.create_loss(inp, return_image)
 tf.summary.scalar('Loss', loss_value)
@@ -34,7 +36,7 @@ if not os.path.exists('./networks/'):
     os.makedirs('./networks/')
 
 with tf.Session() as sess:
-    net_name = 'less_jpeg-full-dev'
+    net_name = 'less_jpeg-full-deep'
     saver = tf.train.Saver()
     writer = tf.summary.FileWriter("output/"+net_name, sess.graph)
 
@@ -66,7 +68,7 @@ with tf.Session() as sess:
             print('step %s, loss: %f'%(i, loss_value.eval(feed_dict={inp:batch, inp_compressed:batch_comp})))
             writer.add_summary(merged.eval(feed_dict={inp:batch, inp_compressed:batch_comp}), global_step=sess.run(global_step))
         if i%100 == 0:
-            batch_pic, w, h = input_prod.get_picture(2)
+            batch_pic, w, h = input_prod.get_picture(3)
             batch_comp_pic = input_prod.compress_batch(batch_pic, comp_qual)
             sub_batch_list = []
 
