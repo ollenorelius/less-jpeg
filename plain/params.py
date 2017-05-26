@@ -1,0 +1,7 @@
+IMAGE_SIZE = 64
+CHANNELS = 3
+
+FORMAT = 'jpeg'
+
+SHUFFLE = True
+BATCH_SIZE = 30

@@ -67,7 +67,7 @@ with tf.Session() as sess:
         if i%10 == 0:
             print('step %s, loss: %f'%(i, loss_value.eval(feed_dict={inp:batch, inp_compressed:batch_comp})))
             writer.add_summary(merged.eval(feed_dict={inp:batch, inp_compressed:batch_comp}), global_step=sess.run(global_step))
-        if i%100 == 0:
+        if i%1000 == 0:
             batch_pic, w, h = input_prod.get_picture(3)
             batch_comp_pic = input_prod.compress_batch(batch_pic, comp_qual)
             sub_batch_list = []
