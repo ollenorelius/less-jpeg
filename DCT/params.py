@@ -1,6 +1,7 @@
 IMAGE_SIZE = 64
 CHANNELS = 3
 
+QUALITY = 30
 FORMAT = 'jpeg'
 
 SHUFFLE = True

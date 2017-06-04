@@ -79,12 +79,12 @@ class InputProducer():
 
         return out_batch
 
-    def save_batch(self, batch, folder):
+    def save_batch(self, batch, folder, start_number=0, quality=100):
         batch_size = batch.shape[0]
         for i_pic in range(batch_size):
-            out = open(folder + '/%s.png'%i_pic, 'wb')
+            out = open(folder + '/%s.png'%str(i_pic+start_number), 'wb')
             im = Image.fromarray(batch[i_pic,:,:,:], 'RGB')
-            im.save(out, format='png', quality=100)
+            im.save(out, format='png', quality=quality)
         return 1
 
     def new_slice_list(self, pic_number, trim, shuffle=p.SHUFFLE):
@@ -118,3 +118,11 @@ class InputProducer():
         if shuffle:
             np.random.shuffle(pic_slices)
         return pic_slices, w, h
+
+    def create_sliced_folders(self):
+        i = 0
+        for n in range(len(self.filenames)):
+            slices,x,y = self.new_slice_list(pic_number=n, trim=True, shuffle=False)
+            self.save_batch(np.asarray(slices), 'data/GT', start_number=i)
+            self.save_batch(np.asarray(slices), 'data/comp', start_number=i, quality=p.QUALITY)
+            i += len(slices)
