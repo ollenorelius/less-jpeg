@@ -1,9 +1,9 @@
+"""Contains everything related to loss."""
 import tensorflow as tf
-import numpy as np
-import params as p
+
 
 def create_loss(input_tensor, prediction):
-
+    """Construct loss tensor."""
     tf.summary.histogram('input_tensor_loss', input_tensor)
     tf.summary.histogram('Prediction_loss', prediction)
 

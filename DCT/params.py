@@ -1,3 +1,5 @@
+"""Defines parameters used globally in program."""
+
 IMAGE_SIZE = 64
 CHANNELS = 3
 
