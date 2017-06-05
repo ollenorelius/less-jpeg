@@ -51,13 +51,14 @@ def create_deep_backward_net(input_tensor, original_batch):
 
 def create_flat_net(input_tensor):
     with tf.name_scope('Forward_net'):
-        l1 = conv_layer(input_tensor, 5, 32, 1, 'layer_1')
-        l2 = conv_layer(l1, 3, 64, 1, 'layer_2')
+        l1 = conv_layer(input_tensor, 7, 32, 1, 'layer_1')
+        l2 = conv_layer(l1, 5, 64, 1, 'layer_2')
         l3 = conv_layer(l2, 3, 64, 1, 'layer_3')
         l4 = conv_layer(l3, 3, 64, 1, 'layer_4')
         l5 = conv_layer(l4, 3, 92, 1, 'layer_5')
         l6 = conv_layer(l5, 3, 128, 1, 'layer_6')
-        r_l1 = output_layer(l6, 1, p.CHANNELS, 1, 'end_layer_1')
+        l6_conc = tf.concat([l6, input_tensor], 3)
+        r_l1 = output_layer(l6_conc, 1, p.CHANNELS, 1, 'end_layer_1')
         return r_l1
 
 def output_layer(input_tensor, kernel_size, depth, stride, name):

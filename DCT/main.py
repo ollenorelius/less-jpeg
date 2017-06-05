@@ -23,7 +23,7 @@ return_image = net.create_flat_net(inp_compressed)
 loss_value = loss.create_loss(inp, return_image)
 tf.summary.scalar('Loss', loss_value)
 global_step = tf.Variable(0, dtype=tf.int32)
-train_step = tf.train.AdamOptimizer(0.0001).minimize(loss_value, global_step=global_step)
+train_step = tf.train.AdamOptimizer(0.001).minimize(loss_value, global_step=global_step)
 
 
 merged = tf.summary.merge_all()
@@ -36,7 +36,7 @@ if not os.path.exists('./networks/'):
     os.makedirs('./networks/')
 
 with tf.Session() as sess:
-    net_name = 'less_jpeg-full-deep'
+    net_name = 'less_jpeg-full-deep-res'
     saver = tf.train.Saver()
     writer = tf.summary.FileWriter("output/"+net_name, sess.graph)
 
@@ -59,16 +59,17 @@ with tf.Session() as sess:
 
     for i in range(1000000):
         comp_qual = 30
-        batch = u.batch_DCT(input_prod.get_batch(batch_size))
+        batch = input_prod.get_batch(batch_size)
+        batch_DCT = u.batch_DCT(batch)
         batch_comp = u.batch_DCT(input_prod.compress_batch(batch, comp_qual))
         #input_prod.save_batch(batch_comp, 'data/compressed')
 
-        train_step.run(feed_dict={inp:batch, inp_compressed:batch_comp})
-        if i%10 == 0:
-            print('step %s, loss: %f'%(i, loss_value.eval(feed_dict={inp:batch, inp_compressed:batch_comp})))
-            writer.add_summary(merged.eval(feed_dict={inp:batch, inp_compressed:batch_comp}), global_step=sess.run(global_step))
-        if i%100 == 0:
-            batch_pic, w, h = input_prod.get_picture(3)
+        train_step.run(feed_dict={inp:batch_DCT, inp_compressed:batch_comp})
+        if i%30 == 0:
+            print('step %s, loss: %e'%(i, loss_value.eval(feed_dict={inp:batch_DCT, inp_compressed:batch_comp})))
+            writer.add_summary(merged.eval(feed_dict={inp:batch_DCT, inp_compressed:batch_comp}), global_step=sess.run(global_step))
+        if i%10000 == 0:
+            batch_pic, w, h = input_prod.get_picture(0)
             batch_comp_pic = input_prod.compress_batch(batch_pic, comp_qual)
             batch_comp_pic = u.batch_DCT(batch_comp_pic)
             sub_batch_list = []
